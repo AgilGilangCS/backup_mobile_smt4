@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/screen_lemari/edit_lemari.dart';
+import 'package:backup_mobile_smt4/screen_lemari/edit_lemari.dart';
 
 class Details_lemari extends StatefulWidget {
   const Details_lemari({super.key});

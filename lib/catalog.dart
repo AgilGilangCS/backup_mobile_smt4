@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/kategori/kursipage.dart';
-import 'package:mobile_smt4/kategori/lainnyapage.dart';
-import 'package:mobile_smt4/kategori/lemaripage.dart';
-import 'package:mobile_smt4/kategori/mejapage.dart';
-import 'package:mobile_smt4/screen_custom/custom.dart';
-import 'package:mobile_smt4/screen_kursi/kursi.dart';
-import 'package:mobile_smt4/screen_lemari/lemari.dart';
-import 'package:mobile_smt4/screens_meja/meja.dart';
+import 'package:backup_mobile_smt4/kategori/kursipage.dart';
+import 'package:backup_mobile_smt4/kategori/lainnyapage.dart';
+import 'package:backup_mobile_smt4/kategori/lemaripage.dart';
+import 'package:backup_mobile_smt4/kategori/mejapage.dart';
+import 'package:backup_mobile_smt4/screen_custom/custom.dart';
+import 'package:backup_mobile_smt4/screen_kursi/kursi.dart';
+import 'package:backup_mobile_smt4/screen_lemari/lemari.dart';
+import 'package:backup_mobile_smt4/screens_meja/meja.dart';
 
 class Catalogs extends StatefulWidget {
   const Catalogs({Key? key}) : super(key: key);

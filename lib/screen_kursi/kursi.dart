@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/homes.dart';
-import 'package:mobile_smt4/screen_kursi/detail_kursi.dart';
-import 'package:mobile_smt4/screen_kursi/form_kursi.dart';
+import 'package:backup_mobile_smt4/homes.dart';
+import 'package:backup_mobile_smt4/screen_kursi/detail_kursi.dart';
+import 'package:backup_mobile_smt4/screen_kursi/form_kursi.dart';
 
 class Kursis extends StatelessWidget {
   const Kursis({super.key});

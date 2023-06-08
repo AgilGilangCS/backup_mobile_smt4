@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/homes.dart';
-import 'package:mobile_smt4/screen_lemari/detail_lemari.dart';
-import 'package:mobile_smt4/screen_lemari/form_lemari.dart';
+import 'package:backup_mobile_smt4/homes.dart';
+import 'package:backup_mobile_smt4/screen_lemari/detail_lemari.dart';
+import 'package:backup_mobile_smt4/screen_lemari/form_lemari.dart';
 
 class Lemaris extends StatelessWidget {
   const Lemaris({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/screen_custom/edit_custom.dart';
+import 'package:backup_mobile_smt4/screen_custom/edit_custom.dart';
 
 class Details_custom extends StatefulWidget {
   const Details_custom({super.key});

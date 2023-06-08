@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/screen_kursi/edit_kursi.dart';
+import 'package:backup_mobile_smt4/screen_kursi/edit_kursi.dart';
 
 class Details_kursi extends StatefulWidget {
   const Details_kursi({super.key});

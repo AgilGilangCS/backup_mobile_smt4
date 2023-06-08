@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_smt4/homes.dart';
-import 'package:mobile_smt4/screen_custom/detail_custom.dart';
-import 'package:mobile_smt4/screen_custom/form_custom.dart';
+import 'package:backup_mobile_smt4/homes.dart';
+import 'package:backup_mobile_smt4/screen_custom/detail_custom.dart';
+import 'package:backup_mobile_smt4/screen_custom/form_custom.dart';
 
 class Customs extends StatelessWidget {
   const Customs({super.key});
