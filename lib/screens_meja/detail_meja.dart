@@ -41,11 +41,12 @@ class _Details_mejaState extends State<Details_meja> {
               color: Color(0xFFF9683A),
             )),
         actions: [
-          IconButton(onPressed: (){
-
-          },
-              icon: Icon(Icons.delete_forever_rounded,
-              color: Color(0xFFF24E1E),))
+          IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.delete_forever_rounded,
+                color: Color(0xFFF24E1E),
+              ))
         ],
       ),
       // Body
@@ -143,6 +144,25 @@ class _Details_mejaState extends State<Details_meja> {
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
+          ),
+        ),
+        SizedBox(
+          height: 30,
+        ),
+        Text(
+          "Harga",
+          style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold),
+        ),
+        // output
+        Text(
+          "Rp.500.000",
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFF9683A),
           ),
         ),
         SizedBox(

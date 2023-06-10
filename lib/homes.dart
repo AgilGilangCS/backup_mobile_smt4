@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +8,7 @@ import 'package:backup_mobile_smt4/screen_custom/custom.dart';
 import 'package:backup_mobile_smt4/screen_kursi/kursi.dart';
 import 'package:backup_mobile_smt4/screen_lemari/lemari.dart';
 import 'package:backup_mobile_smt4/screens_meja/meja.dart';
+import 'package:http/http.dart' as http;
 
 class Homes extends StatefulWidget {
   const Homes({Key? key}) : super(key: key);
@@ -16,6 +19,7 @@ class Homes extends StatefulWidget {
 
 class _HomesState extends State<Homes> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+
 
   @override
   void initState() {
@@ -120,10 +124,11 @@ class _HomesState extends State<Homes> with SingleTickerProviderStateMixin {
                 }).toList(),
               ),
               Container(
-                margin: EdgeInsets.only(left: 40,right: 40,top: 6,bottom: 5),
+                margin: EdgeInsets.only(left: 40, right: 40, top: 6, bottom: 5),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context){
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
                       return Catalogs();
                     }));
                   },

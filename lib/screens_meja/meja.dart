@@ -1,13 +1,45 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:backup_mobile_smt4/homes.dart';
 import 'package:backup_mobile_smt4/screens_meja/detail_meja.dart';
 import 'package:backup_mobile_smt4/screens_meja/form_meja.dart';
+import 'package:http/http.dart' as http;
 
-class Mejas extends StatelessWidget {
+class Mejas extends StatefulWidget {
   const Mejas({super.key});
 
   @override
+  State<Mejas> createState() => _MejasState();
+}
+
+class _MejasState extends State<Mejas> {
+  List _listdata = [];
+
+  Future _getdata() async {
+    try {
+      final response = await http
+          .get(Uri.parse('http://192.168.0.136/mobile_smt4/API/read.php'));
+      if (response.statusCode == 200) {
+        print(response.body);
+        final data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    _getdata();
+    print(_listdata);
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -44,12 +76,11 @@ class Mejas extends StatelessWidget {
             // List
             Padding(
               padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.vertical,
-                children: [
+              child: ListView.builder(
+                itemCount: _listdata.length,
+                itemBuilder: (context, index) {
                   // Body List
-                  Padding(
+                  return Padding(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: SingleChildScrollView(
                       child: Column(
@@ -74,7 +105,7 @@ class Mejas extends StatelessWidget {
                                 //  Nama Pemesan
                                 children: [
                                   Text(
-                                    'Pak Ferdi',
+                                    _listdata[index]['nama_meja'],
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
@@ -86,7 +117,7 @@ class Mejas extends StatelessWidget {
                                   // Alamat
                                   SizedBox(height: 5),
                                   Text(
-                                    'Jl.AYani no.5864',
+                                    _listdata[index]['alamat_meja'],
                                     style: TextStyle(
                                       fontFamily: 'Poppins',
                                       color: Colors.white,
@@ -106,7 +137,7 @@ class Mejas extends StatelessWidget {
                                     // Tanggal
                                     children: [
                                       Text(
-                                        '25 Mei 2023',
+                                        _listdata[index]['tanggal_meja'],
                                         style: TextStyle(
                                           fontFamily: 'Poppins',
                                           color: Colors.white.withOpacity(0.6),
@@ -138,8 +169,10 @@ class Mejas extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  );
+                },
+                padding: EdgeInsets.zero,
+                scrollDirection: Axis.vertical,
               ),
             ),
             Positioned(
