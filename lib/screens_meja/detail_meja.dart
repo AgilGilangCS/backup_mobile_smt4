@@ -1,11 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:backup_mobile_smt4/screens_meja/meja.dart';
 import '/screens_meja/edit_meja.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class Details_meja extends StatefulWidget {
-  const Details_meja({super.key});
+  final String url = 'http://192.168.1.26:8080/api/mejas';
+
+  Future<List<dynamic>> getMejas() async {
+    var response = await http.get(Uri.parse(url));
+    print(json.decode(response.body));
+    return json.decode(response.body)['data'];
+  }
+
+  final Map data;
+  const Details_meja({Key? key, required this.data});
 
   @override
   State<Details_meja> createState() => _Details_mejaState();
@@ -64,7 +76,7 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "Ferdi Tok",
+          widget.data['nama_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
@@ -83,7 +95,7 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "Banyuwangi",
+          widget.data['alamat_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
@@ -102,7 +114,7 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "081234567898",
+          widget.data['telp_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
@@ -121,7 +133,7 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "meja makan ukuran 3 meter x 2.5 meter, bahan kayu jati, kaca menggunakan ketebalan 5 cm",
+          widget.data['deskripsi_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
@@ -140,7 +152,7 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "25 mei 2023",
+          widget.data['tanggal_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
             color: Color(0xFFFFFFFF),
@@ -149,6 +161,7 @@ class _Details_mejaState extends State<Details_meja> {
         SizedBox(
           height: 30,
         ),
+        // Harga
         Text(
           "Harga",
           style: GoogleFonts.poppins(
@@ -158,11 +171,10 @@ class _Details_mejaState extends State<Details_meja> {
         ),
         // output
         Text(
-          "Rp.500.000",
+          widget.data['harga_meja'],
           style: GoogleFonts.poppins(
             fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFFF9683A),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         SizedBox(
@@ -173,7 +185,9 @@ class _Details_mejaState extends State<Details_meja> {
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(
               builder: (context) {
-                return Edits_meja();
+                return Edits_meja(
+                  idMeja: widget.data['id_meja'].toString(),
+                );
               },
             ));
           },
@@ -185,7 +199,7 @@ class _Details_mejaState extends State<Details_meja> {
               textStyle: GoogleFonts.poppins(
                   textStyle:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              shape: ContinuousRectangleBorder(
+              shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               shadowColor: Color(0XFF000000)),
         )

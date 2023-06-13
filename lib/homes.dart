@@ -19,10 +19,27 @@ class Homes extends StatefulWidget {
 
 class _HomesState extends State<Homes> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  List<dynamic> _listdata = [];
 
+  Future<void> _getdata() async {
+    try {
+      final response = await http.get(
+          Uri.parse('http://192.168.43.116/mobile_smt4/API/read_meja.php'));
+      if (response.statusCode == 200) {
+        print(response.body);
+        final data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void initState() {
+    _getdata();
     super.initState();
     _controller = AnimationController(vsync: this);
   }

@@ -69,10 +69,10 @@ class _CatalogsState extends State<Catalogs> with SingleTickerProviderStateMixin
         physics: NeverScrollableScrollPhysics(),
         controller: _tabController,
         children: [
-              mejapage(),
-              kursipage(),
-              lemaripage(),
-              lainnyapage(),
+              // mejapage(),
+              // kursipage(),
+              // lemaripage(),
+              // lainnyapage(),
             ],
       )
     );
