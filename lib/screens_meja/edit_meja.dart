@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:backup_mobile_smt4/screens_meja/meja.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +10,7 @@ import 'package:http/http.dart' as http;
 
 class Edits_meja extends StatefulWidget {
   final String idMeja;
+
   const Edits_meja({Key? key, required this.idMeja}) : super(key: key);
 
   @override
@@ -19,22 +19,22 @@ class Edits_meja extends StatefulWidget {
 
 class _Edits_mejaState extends State<Edits_meja> {
   File? _image;
-  PickedFile? _pickedFile;
   final _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    _pickedFile = await _picker.getImage(source: ImageSource.gallery);
-    if (_pickedFile != null) {
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
       setState(() {
-        _image = File(_pickedFile!.path);
+        _image = File(pickedFile.path);
       });
     }
   }
 
   Future<void> _uploadImage() async {
     if (_image != null) {
-      final url = Uri.parse("http://192.168.1.26:8080/api/mejas");
-      final request = http.MultipartRequest('POST', url);
+      final url =
+          Uri.parse("http://192.168.1.26:8080/api/mejas/${widget.idMeja}");
+      final request = http.MultipartRequest('PUT', url);
       request.files
           .add(await http.MultipartFile.fromPath('image_meja', _image!.path));
 
@@ -56,9 +56,37 @@ class _Edits_mejaState extends State<Edits_meja> {
   TextEditingController _deskripsiController = TextEditingController();
   TextEditingController _hargaController = TextEditingController();
 
-  Future saveMeja() async {
-    final response = await http.post(
-      Uri.parse("http://192.168.1.26:8080/api/mejas"),
+  Future<void> fetchMeja() async {
+    final response = await http
+        .get(Uri.parse("http://192.168.1.26:8080/api/mejas/${widget.idMeja}"));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['data'] != null && data['data'].length > 0) {
+        final meja = data['data'][0];
+        if (meja != null) {
+          setState(() {
+            _namaController.text = meja["nama_meja"].toString();
+            _alamatController.text = meja["alamat_meja"].toString();
+            _telpController.text = meja["telp_meja"].toString();
+            _deskripsiController.text = meja["deskripsi_meja"].toString();
+            date.text = meja["tanggal_meja"].toString();
+            _hargaController.text = meja["harga_meja"].toString();
+          });
+        } else {
+          print("No data available");
+        }
+      } else {
+        print("No data available");
+      }
+    } else {
+      print("Failed to fetch meja. Error: ${response.reasonPhrase}");
+    }
+  }
+
+  Future<void> saveMeja() async {
+    final response = await http.put(
+      Uri.parse("http://192.168.1.26:8080/api/mejas/${widget.idMeja}"),
       body: {
         "nama_meja": _namaController.text,
         "alamat_meja": _alamatController.text,
@@ -66,10 +94,9 @@ class _Edits_mejaState extends State<Edits_meja> {
         "deskripsi_meja": _deskripsiController.text,
         "tanggal_meja": date.text,
         "harga_meja": _hargaController.text,
-        "image_meja": _image != null ? _image!.path : ""
+        "image_meja": _image != null ? _image!.path : "",
       },
     );
-    print(response.body);
 
     return json.decode(response.body);
   }
@@ -77,6 +104,7 @@ class _Edits_mejaState extends State<Edits_meja> {
   @override
   void initState() {
     date.text = "";
+    fetchMeja(); // Mengambil data meja saat inisialisasi
     super.initState();
   }
 
@@ -89,7 +117,7 @@ class _Edits_mejaState extends State<Edits_meja> {
         backgroundColor: Color(0xFF42454E),
         elevation: 0,
         title: Text(
-          "Tambahkan Data Meja",
+          "Edit Data Meja",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
             color: Color(0xFFF9683A),
@@ -103,9 +131,9 @@ class _Edits_mejaState extends State<Edits_meja> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _pickedFile != null
+              _image != null
                   ? Image.file(
-                      File(_pickedFile!.path),
+                      _image!,
                     )
                   : Text(
                       "Masukan gambar meja",
@@ -122,248 +150,185 @@ class _Edits_mejaState extends State<Edits_meja> {
                   "Pilih Gambar",
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Color(0xFF42454E),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xFFF9683A),
+                  elevation: 0,
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: _namaController,
-                  decoration: InputDecoration(
-                    labelText: "Nama",
-                    labelStyle: GoogleFonts.poppins(
+              TextFormField(
+                controller: _namaController,
+                decoration: InputDecoration(
+                  labelText: "Nama Meja",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: _alamatController,
-                  decoration: InputDecoration(
-                    labelText: "Alamat",
-                    labelStyle: GoogleFonts.poppins(
+              TextFormField(
+                controller: _alamatController,
+                decoration: InputDecoration(
+                  labelText: "Alamat Meja",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: _telpController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "No. Telp",
-                    labelStyle: GoogleFonts.poppins(
+              TextFormField(
+                controller: _telpController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  labelText: "Nomor Telepon Meja",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: _deskripsiController,
-                  decoration: InputDecoration(
-                    labelText: "Deskripsi",
-                    labelStyle: GoogleFonts.poppins(
+              TextFormField(
+                controller: _deskripsiController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Deskripsi Meja",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  controller: _hargaController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: "Harga",
-                    labelStyle: GoogleFonts.poppins(
+              TextFormField(
+                controller: date,
+                decoration: InputDecoration(
+                  labelText: "Tanggal",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.white,
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
                 ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  readOnly: true,
-                  controller: date,
-                  onTap: () async {
-                    var dateValue = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.dark().copyWith(
-                            colorScheme: ColorScheme.dark(
-                              primary: Color(0xFFF9683A),
-                              onPrimary: Colors.white,
-                              surface: Color(0xFFF9683A),
-                              onSurface: Colors.black,
-                            ),
-                            dialogBackgroundColor: Colors.white,
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-                    if (dateValue != null) {
-                      setState(() {
-                        date.text = DateFormat('yyyy-MM-dd').format(dateValue);
-                      });
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: "Tanggal",
-                    labelStyle: GoogleFonts.poppins(
-                      color: Colors.white,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  style: GoogleFonts.poppins(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () async {
-                  await saveMeja();
-                  await _uploadImage();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => Mejas()),
+                readOnly: true,
+                onTap: () async {
+                  DateTime? selectedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2025),
                   );
+                  if (selectedDate != null) {
+                    setState(() {
+                      date.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                    });
+                  }
+                },
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _hargaController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: "Harga Meja",
+                  labelStyle: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color(0xFFF9683A),
+                    ),
+                  ),
+                ),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: () {
+                  saveMeja();
+                  Navigator.pop(context);
                 },
                 child: Text(
                   "Simpan",
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Color(0xFF42454E),
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
                   primary: Color(0xFFF9683A),
+                  elevation: 0,
                 ),
               ),
             ],

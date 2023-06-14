@@ -1,21 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:backup_mobile_smt4/screens_meja/meja.dart';
 import '/screens_meja/edit_meja.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
 class Details_meja extends StatefulWidget {
-  final String url = 'http://192.168.1.26:8080/api/mejas';
-
-  Future<List<dynamic>> getMejas() async {
-    var response = await http.get(Uri.parse(url));
-    print(json.decode(response.body));
-    return json.decode(response.body)['data'];
-  }
-
   final Map data;
   const Details_meja({Key? key, required this.data});
 
@@ -24,10 +14,18 @@ class Details_meja extends StatefulWidget {
 }
 
 class _Details_mejaState extends State<Details_meja> {
-  TextEditingController datetimeinput = TextEditingController();
+  late String idMeja;
+
+  Future<void> deleteMeja(String data) async {
+    String url = "http://192.168.1.26:8080/api/mejas/" + data;
+
+    var response = await http.delete(Uri.parse(url));
+    return json.decode(response.body);
+  }
+
   @override
   void initState() {
-    datetimeinput.text = "";
+    idMeja = widget.data['id_meja'].toString();
     super.initState();
   }
 
@@ -54,7 +52,13 @@ class _Details_mejaState extends State<Details_meja> {
             )),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                deleteMeja(widget.data['id_meja'].toString()).then((value) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Data telah dihapus")));
+                  Navigator.pop(context);
+                });
+              },
               icon: Icon(
                 Icons.delete_forever_rounded,
                 color: Color(0xFFF24E1E),
@@ -186,7 +190,7 @@ class _Details_mejaState extends State<Details_meja> {
             Navigator.push(context, MaterialPageRoute(
               builder: (context) {
                 return Edits_meja(
-                  idMeja: widget.data['id_meja'].toString(),
+                  idMeja: idMeja,
                 );
               },
             ));

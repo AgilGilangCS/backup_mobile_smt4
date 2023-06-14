@@ -322,7 +322,7 @@ class _Forms_mejaState extends State<Forms_meja> {
                     }
                   },
                   decoration: InputDecoration(
-                    labelText: "Tanggal Meja",
+                    labelText: "Tanggal",
                     labelStyle: GoogleFonts.poppins(
                       color: Colors.white,
                     ),
@@ -355,7 +355,7 @@ class _Forms_mejaState extends State<Forms_meja> {
                   );
                 },
                 child: Text(
-                  "Tambah Meja",
+                  "Tambah",
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
