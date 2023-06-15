@@ -1,31 +1,52 @@
+import 'dart:convert';
+
+import 'package:backup_mobile_smt4/screen_custom/detail_custom.dart';
+import 'package:backup_mobile_smt4/screen_custom/form_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:backup_mobile_smt4/homes.dart';
-import 'package:backup_mobile_smt4/screen_custom/detail_custom.dart';
-import 'package:backup_mobile_smt4/screen_custom/form_custom.dart';
+import 'package:http/http.dart' as http;
 
-class Customs extends StatelessWidget {
-  const Customs({super.key});
+class Customs extends StatefulWidget {
+  const Customs({Key? key});
+
+  @override
+  _CustomsState createState() => _CustomsState();
+}
+
+class _CustomsState extends State<Customs> {
+  final String url = 'http://192.168.43.116:8080/api/lainnyas';
+
+  Future<List<dynamic>> getCustoms() async {
+    var response = await http.get(Uri.parse(url));
+    print(json.decode(response.body));
+    return json.decode(response.body)['data'];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xFFFFFFFF),
-          centerTitle: true,
-          title: Text(
-            "Lainnya",
-            style: GoogleFonts.poppins(
-                color: Color(0xFF42454E), fontWeight: FontWeight.bold),
-          ),
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back),
+        backgroundColor: Color(0xFFFFFFFF),
+        centerTitle: true,
+        title: Text(
+          "Lainnya",
+          style: GoogleFonts.poppins(
             color: Color(0xFF42454E),
-          )),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Color(0xFF42454E),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: [
@@ -42,116 +63,155 @@ class Customs extends StatelessWidget {
               ),
             ),
             // List
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 2, 0, 0),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                scrollDirection: Axis.vertical,
-                children: [
-                  // Body List
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 360,
-                            height: 133,
-                            decoration: BoxDecoration(
-                              color: Color(0xFF676B77),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            // Isi Dalam List
-                            child: Padding(
-                              padding: EdgeInsets.fromLTRB(10, 5, 0, 5),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                //  Nama Pemesan
-                                children: [
-                                  Text(
-                                    'Pak Ferdi',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  // Alamat
-                                  SizedBox(height: 5),
-                                  Text(
-                                    'Jl.AYani no.5864',
-                                    style: TextStyle(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  // Garis
-                                  Divider(
-                                    thickness: 1,
-                                    color: Color(0xFFF9683A),
-                                  ),
-                                  // Tanggal dan Icon Button
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    // Tanggal
-                                    children: [
-                                      Text(
-                                        '25 Mei 2023',
-                                        style: TextStyle(
-                                          fontFamily: 'Poppins',
-                                          color: Colors.white.withOpacity(0.6),
-                                          fontSize: 16,
+            FutureBuilder<List<dynamic>>(
+              future: getCustoms(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Container(
+                    margin: EdgeInsets.all(10),
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      scrollDirection: Axis.vertical,
+                      children: [
+                        // Body List
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: snapshot.data!.length,
+                                  itemBuilder: (context, index) {
+                                    final lainnya = snapshot.data![index];
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 10),
+                                      child: Container(
+                                        width: 360,
+                                        height: 133,
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF676B77),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        // Isi Dalam List
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(10, 5, 0, 5),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            // Nama lainnya
+                                            children: [
+                                              Text(
+                                                lainnya['nama_lainnya'],
+                                                textAlign: TextAlign.start,
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.white,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              // Alamat lainnya
+                                              SizedBox(height: 5),
+                                              Text(
+                                                lainnya['alamat_lainnya'],
+                                                style: TextStyle(
+                                                  fontFamily: 'Poppins',
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              // Garis
+                                              Divider(
+                                                thickness: 1,
+                                                color: Color(0xFFF9683A),
+                                              ),
+                                              // Tanggal dan Icon Button
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                // Tanggal
+                                                children: [
+                                                  Text(
+                                                    lainnya['tanggal_lainnya'],
+                                                    style: TextStyle(
+                                                      fontFamily: 'Poppins',
+                                                      color: Colors.white
+                                                          .withOpacity(0.6),
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  // Icon Button
+                                                  IconButton(
+                                                    icon: Icon(
+                                                      Icons.arrow_right_rounded,
+                                                      color: Color(0XFFF9683A),
+                                                      size: 30,
+                                                    ),
+                                                    onPressed: () {
+                                                      print(lainnya['id_lainnya']);
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return Details_custom(
+                                                                data: snapshot
+                                                                        .data![
+                                                                    index]);
+                                                          },
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      // Icon Button
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.arrow_right_rounded,
-                                          color: Color(0XFFF9683A),
-                                          size: 30,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return Details_custom();
-                                            },
-                                          ));
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Data error');
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
             Positioned(
               right: 34,
               bottom: 31,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return Forms_custom();
-                    },
-                  ));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return Forms_custom();
+                      },
+                    ),
+                  );
                 },
                 child: Container(
                   width: 80,

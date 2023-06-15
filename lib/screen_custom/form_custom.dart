@@ -1,33 +1,82 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:backup_mobile_smt4/screen_custom/custom.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class Forms_custom extends StatefulWidget {
-  const Forms_custom({super.key});
+  const Forms_custom({Key? key}) : super(key: key);
 
   @override
   State<Forms_custom> createState() => _Forms_customState();
 }
 
 class _Forms_customState extends State<Forms_custom> {
-  TextEditingController datetimeinput = TextEditingController();
-  File? image;
+  File? _image;
+  final _picker = ImagePicker();
 
-  Future getImage() async{
-    final ImagePicker _picker = ImagePicker();
-    final XFile? imagePicker = await _picker.pickImage(source: ImageSource.gallery);
-    image = File(imagePicker!.path);
-    setState(() {
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
-    });
+  Future<void> _uploadImage(File imageFile) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'http://192.168.43.116:8080/api/lainnyas/'), // Ganti dengan URL endpoint Anda
+    );
+
+    var multipartFile =
+        await http.MultipartFile.fromPath('image', imageFile.path);
+    request.files.add(multipartFile);
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('Gambar berhasil diupload');
+    } else {
+      print('Gagal mengupload gambar');
+    }
+  }
+
+  TextEditingController date = TextEditingController();
+  TextEditingController _namaController = TextEditingController();
+  TextEditingController _alamatController = TextEditingController();
+  TextEditingController _telpController = TextEditingController();
+  TextEditingController _deskripsiController = TextEditingController();
+  TextEditingController _hargaController = TextEditingController();
+
+  Future saveLainnya() async {
+    final response = await http.post(
+      Uri.parse("http://192.168.43.116:8080/api/lainnyas"),
+      body: {
+        "nama_lainnya": _namaController.text,
+        "alamat_lainnya": _alamatController.text,
+        "telp_lainnya": _telpController.text,
+        "deskripsi_lainnya": _deskripsiController.text,
+        "tanggal_lainnya": date.text,
+        "harga_lainnya": _hargaController.text,
+        "image_lainnya": _image != null ? _image!.path.split('/').last : "",
+      },
+    );
+    print(response.body);
+
+    return json.decode(response.body);
   }
 
   @override
   void initState() {
-    datetimeinput.text = "";
+    date.text = "";
     super.initState();
   }
 
@@ -41,244 +90,263 @@ class _Forms_customState extends State<Forms_custom> {
         elevation: 0,
         title: Text(
           "Tambahkan Data Lainnya",
-          style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold, color: Color(0xFFF9683A)),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFF9683A),
+          ),
         ),
         leading: Container(),
       ),
-      // Body
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 50),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-              image != null ? Container(height: 200, width: MediaQuery.of(context).size.width,
-                  child: Image.file(image!,fit: BoxFit.cover,)): Container(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(onPressed: () async {
-                    await getImage();
-                  },
-                    child: Text("Tambahkan Foto"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Color(0XFFF9683A),
-                      onPrimary: Color(0XFFFFFFFF),
-                      textStyle: GoogleFonts.poppins(),
-                    ),),
-                ],
-              ),
+              _image != null
+                  ? Image.file(
+                      _image!,
+                    )
+                  : Text(
+                      "Masukan gambar Lainnya",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+              SizedBox(height: 20),
+              // TextFormField lainnya
               Container(
-                width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Color(0xFF676B77),
                 ),
-                // Nama Pesanan
                 child: TextFormField(
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(color: Color(0xFFFFFFFF))),
+                  controller: _namaController,
                   decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFF9683A))),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0x00FFFFFF))),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      hintText: "Nama Pesanan",
-                      hintStyle: TextStyle(color: Color(0xFFF9683A)),
-                      labelText: "Nama pesanan",
-                      labelStyle: TextStyle(color: Color(0xFFFFFFFF)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15)),
-                ),
-              ),
-              // Alamat
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFF676B77),
-                ),
-                // form alamat
-                child: TextFormField(
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(color: Color(0xFFFFFFFF))),
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFF9683A))),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0x00FFFFFF))),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      hintText: "Alamat",
-                      hintStyle: TextStyle(color: Color(0xFFF9683A)),
-                      labelText: "Alamat",
-                      labelStyle: TextStyle(color: Color(0XFFFFFFFF)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15)),
-                ),
-              ),
-              // no.hp
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFF676B77),
-                ),
-                // form no.hp
-                child: TextFormField(
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(color: Color(0xFFFFFFFF))),
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFF9683A))),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0x00FFFFFF))),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      hintText: "No.Handphone",
-                      hintStyle: TextStyle(color: Color(0xFFF9683A)),
-                      labelText: "No.Handphone",
-                      labelStyle: TextStyle(color: Color(0XFFFFFFFF)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15)),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              // deskripsi
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFF676B77),
-                ),
-                // deskripsi
-                child: TextFormField(
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(color: Color(0xFFFFFFFF))),
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFF9683A))),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0x00FFFFFF))),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      hintText: "Deskripsi",
-                      hintStyle: TextStyle(color: Color(0xFFF9683A)),
-                      labelText: "Deskripsi",
-                      labelStyle: TextStyle(color: Color(0XFFFFFFFF)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15)),
-                ),
-              ),
-              // tanggal
-              SizedBox(
-                height: 15,
-              ),
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Color(0xFF676B77),
-                ),
-                // tanggal
-                child: TextFormField(
-                  style: GoogleFonts.poppins(
-                      textStyle: TextStyle(color: Color(0xFFFFFFFF))),
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xFFF9683A))),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0x00FFFFFF))),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(
-                        10,
-                      )),
-                      hintText: "Tanggal",
-                      hintStyle: TextStyle(color: Color(0xFFF9683A)),
-                      labelText: "Tanggal",
-                      labelStyle: TextStyle(color: Color(0XFFFFFFFF)),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15)),
-                  controller: datetimeinput,
-                  readOnly: true,
-                  onTap: () async {
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime(2040),
-                    );
-                    if (pickedDate != null) {
-                      String formatDate =
-                          DateFormat('dd MMMM yyyy').format(pickedDate);
-                      setState(() {
-                        datetimeinput.text = formatDate;
-                      });
-                    } else {
-                      datetimeinput.text = "";
-                    }
-                  },
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              // Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    // Button Batal
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Color(0XFF676B77),
-                          onPrimary: Color(0XFFFFFFFF),
-                          minimumSize: Size(150, 40),
-                          textStyle: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 18.0)),
-                          shape: ContinuousRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          shadowColor: Color(0XFF000000)),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Batal"),
+                    labelText: "Nama",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  Container(
-                      // Button Simpan
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Color(0XFFF9683A),
-                              onPrimary: Color(0XFFFFFFFF),
-                              minimumSize: Size(150, 40),
-                              textStyle: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0)),
-                              shape: ContinuousRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              shadowColor: Color(0XFF000000)),
-                          onPressed: () {},
-                          child: Text("Simpan"))),
-                ],
-              )
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: _alamatController,
+                  decoration: InputDecoration(
+                    labelText: "Alamat",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: _telpController,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    labelText: "Nomor Telepon",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: _deskripsiController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: "Deskripsi",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: date,
+                  decoration: InputDecoration(
+                    labelText: "Tanggal",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2025),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        date.text =
+                            DateFormat('yyyy-MM-dd').format(selectedDate);
+                      });
+                    }
+                  },
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: _hargaController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: "Harga",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await _pickImage();
+                  await _uploadImage;
+                  await saveLainnya();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => Customs()),
+                  );
+                },
+                child: Text(
+                  "Tambah",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFF9683A),
+                ),
+              ),
             ],
           ),
         ),

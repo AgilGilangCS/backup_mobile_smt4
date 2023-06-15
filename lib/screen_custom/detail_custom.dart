@@ -1,21 +1,37 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
+
 import 'package:backup_mobile_smt4/screen_custom/edit_custom.dart';
+import 'package:flutter/material.dart';
+import '/screens_meja/edit_meja.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class Details_custom extends StatefulWidget {
-  const Details_custom({super.key});
+  final Map data;
+  const Details_custom({Key? key, required this.data});
 
   @override
   State<Details_custom> createState() => _Details_customState();
 }
 
 class _Details_customState extends State<Details_custom> {
-  TextEditingController datetimeinput = TextEditingController();
+  late String idLainnya;
+  late String imageUrl;
+
+  Future<void> deleteLainnya(String data) async {
+    String url = "http://192.168.43.116:8080/api/lainnyas/" + data;
+
+    var response = await http.delete(Uri.parse(url));
+    return json.decode(response.body);
+  }
+
   @override
   void initState() {
-    datetimeinput.text = "";
+    idLainnya = widget.data['id_lainnya'].toString();
     super.initState();
+    String imageName = widget.data['image_lainnya'];
+    imageUrl = "http://192.168.43.116:8080/storage/img/$imageName";
   }
 
   @override
@@ -29,146 +45,217 @@ class _Details_customState extends State<Details_custom> {
         title: Text(
           "Detail",
           style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold, color: Color(0xFFF9683A)),
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFF9683A),
+          ),
         ),
         leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            color: Color(0xFFF9683A),
+          ),
+        ),
+        actions: [
+          IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              deleteLainnya(widget.data['id_lainnya'].toString()).then((value) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Data telah dihapus")),
+                );
+                Navigator.pop(context);
+              });
             },
             icon: Icon(
-              Icons.arrow_back,
-              color: Color(0xFFF9683A),
-            )),
-        actions: [
-          IconButton(onPressed: (){
-
-          },
-              icon: Icon(Icons.delete_forever_rounded,
-                color: Color(0xFFF24E1E),))
+              Icons.delete_forever_rounded,
+              color: Color(0xFFF24E1E),
+            ),
+          )
         ],
       ),
       // Body
-      body: ListView(padding: EdgeInsets.only(left: 20, right: 10), children: [
-        SizedBox(
-          height: 70,
-        ),
-        // Nama Pesanan
-        Text(
-          "Nama Pesanan",
-          style: GoogleFonts.poppins(
+      body: ListView(
+        padding: EdgeInsets.only(left: 20, right: 10),
+        children: [
+          Container(
+            height: 200,
+            child: imageUrl != null
+                ? Image.network(
+                    imageUrl,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      // Tampilkan teks atau tindakan lain jika gambar gagal dimuat
+                      return Text(
+                        'Gagal memuat gambar',
+                        style: TextStyle(color: Colors.white),
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      'Tidak ada gambar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+          ),
+          SizedBox(
+            height: 70,
+          ),
+          // Nama Pesanan
+          Text(
+            "Nama Pesanan",
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold),
-        ),
-        // output
-        Text(
-          "Ferdi Tok",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        // Alamat
-        Text(
-          "Alamat",
-          style: GoogleFonts.poppins(
+          // output
+          Text(
+            widget.data['nama_lainnya'],
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold),
-        ),
-        // output
-        Text(
-          "Banyuwangi",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color(0xFFFFFFFF),
+            ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        // No.Telepon
-        Text(
-          "No.Telepon",
-          style: GoogleFonts.poppins(
+          SizedBox(
+            height: 30,
+          ),
+          // Alamat
+          Text(
+            "Alamat",
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold),
-        ),
-        // output
-        Text(
-          "081234567898",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        // Deskripsi
-        Text(
-          "Deskripsi",
-          style: GoogleFonts.poppins(
+          // output
+          Text(
+            widget.data['alamat_lainnya'],
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold),
-        ),
-        // output
-        Text(
-          "custom makan ukuran 3 meter x 2.5 meter, bahan kayu jati, kaca menggunakan ketebalan 5 cm",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color(0xFFFFFFFF),
+            ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        // Tanggal
-        Text(
-          "Batas Tanggal",
-          style: GoogleFonts.poppins(
+          SizedBox(
+            height: 30,
+          ),
+          // No.Telepon
+          Text(
+            "No.Telepon",
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold),
-        ),
-        // output
-        Text(
-          "25 mei 2023",
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        // Button Edit
-        ElevatedButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return Edits_custom();
-              },
-            ));
-          },
-          child: Text("Edit"),
-          style: ElevatedButton.styleFrom(
+          // output
+          Text(
+            widget.data['telp_lainnya'],
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          // Deskripsi
+          Text(
+            "Deskripsi",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // output
+          Text(
+            widget.data['deskripsi_lainnya'],
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          // Tanggal
+          Text(
+            "Batas Tanggal",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // output
+          Text(
+            widget.data['tanggal_lainnya'],
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          // Harga
+          Text(
+            "Harga",
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // output
+          Text(
+            widget.data['harga_lainnya'],
+            style: GoogleFonts.poppins(
+              fontSize: 16,
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          // Button Edit
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return Edits_custom(
+                      idLainnya: idLainnya,
+                    );
+                  },
+                ),
+              );
+            },
+            child: Text("Edit"),
+            style: ElevatedButton.styleFrom(
               primary: Color(0XFF676B77),
               onPrimary: Color(0XFFFFFFFF),
               minimumSize: Size(0, 40),
               textStyle: GoogleFonts.poppins(
-                  textStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0)),
-              shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              shadowColor: Color(0XFF000000)),
-        )
-      ]),
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              shadowColor: Color(0XFF000000),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
