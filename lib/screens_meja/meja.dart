@@ -15,7 +15,7 @@ class Mejas extends StatefulWidget {
 }
 
 class _MejasState extends State<Mejas> {
-  final String url = 'http://192.168.1.26:8080/api/mejas';
+  final String url = 'http://192.168.43.116:8080/api/mejas';
 
   Future<List<dynamic>> getMejas() async {
     var response = await http.get(Uri.parse(url));
@@ -160,6 +160,7 @@ class _MejasState extends State<Mejas> {
                                                       size: 30,
                                                     ),
                                                     onPressed: () {
+                                                      print(meja['id_meja']);
                                                       Navigator.push(
                                                         context,
                                                         MaterialPageRoute(

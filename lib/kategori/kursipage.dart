@@ -26,19 +26,21 @@ class kursipage extends StatelessWidget {
             mainAxisSpacing: 6,
           ),
           children: [
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) {
-                    return Details_kursi();
-                  })));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  elevation: 3,
-                ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Details_kursi();
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
                 child: Column(
                   children: [
                     Expanded(
@@ -47,7 +49,7 @@ class kursipage extends StatelessWidget {
                           top: Radius.circular(8),
                         ),
                         child: Image.asset(
-                          "assets/images/lemari.jpg",
+                          "assets/images/kursi/kursi1.jpeg",
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -66,7 +68,107 @@ class kursipage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       child: Text(
-                        "Rp.500.000",
+                        "Rp.250.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Details_kursi();
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/kursi/kursi2.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Kursi Kayu 129",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.250.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Details_kursi();
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/kursi/kursi3.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Kursi Kayu 2 sit",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.400.000",
                         style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
                       ),
                     ),

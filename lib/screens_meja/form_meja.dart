@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:backup_mobile_smt4/screens_meja/meja.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class Forms_meja extends StatefulWidget {
   const Forms_meja({Key? key}) : super(key: key);
@@ -18,33 +18,34 @@ class Forms_meja extends StatefulWidget {
 
 class _Forms_mejaState extends State<Forms_meja> {
   File? _image;
-  PickedFile? _pickedFile;
   final _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    _pickedFile = await _picker.getImage(source: ImageSource.gallery);
-    if (_pickedFile != null) {
+    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
       setState(() {
-        _image = File(_pickedFile!.path);
+        _image = File(pickedFile.path);
       });
     }
   }
 
-  Future<void> _uploadImage() async {
-    if (_image != null) {
-      final url = Uri.parse("http://192.168.1.26:8080/api/mejas");
-      final request = http.MultipartRequest('POST', url);
-      request.files
-          .add(await http.MultipartFile.fromPath('image_meja', _image!.path));
+  Future<void> _uploadImage(File imageFile) async {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'http://192.168.43.116:8080/api/mejas/'), // Ganti dengan URL endpoint Anda
+    );
 
-      final response = await request.send();
-      if (response.statusCode == 200) {
-        print("Image uploaded successfully");
-      } else {
-        print("Failed to upload image. Error: ${response.reasonPhrase}");
-      }
+    var multipartFile =
+        await http.MultipartFile.fromPath('image', imageFile.path);
+    request.files.add(multipartFile);
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print('Gambar berhasil diupload');
     } else {
-      print("No image selected");
+      print('Gagal mengupload gambar');
     }
   }
 
@@ -57,7 +58,7 @@ class _Forms_mejaState extends State<Forms_meja> {
 
   Future saveMeja() async {
     final response = await http.post(
-      Uri.parse("http://192.168.1.26:8080/api/mejas"),
+      Uri.parse("http://192.168.43.116:8080/api/mejas"),
       body: {
         "nama_meja": _namaController.text,
         "alamat_meja": _alamatController.text,
@@ -65,7 +66,7 @@ class _Forms_mejaState extends State<Forms_meja> {
         "deskripsi_meja": _deskripsiController.text,
         "tanggal_meja": date.text,
         "harga_meja": _hargaController.text,
-        "image_meja": _image != null ? _image!.path : ""
+        "image_meja": _image != null ? _image!.path.split('/').last : "",
       },
     );
     print(response.body);
@@ -89,7 +90,7 @@ class _Forms_mejaState extends State<Forms_meja> {
         elevation: 0,
         title: Text(
           "Tambahkan Data Meja",
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFFF9683A),
           ),
@@ -102,37 +103,24 @@ class _Forms_mejaState extends State<Forms_meja> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _pickedFile != null
+              _image != null
                   ? Image.file(
-                      File(_pickedFile!.path),
+                      _image!,
                     )
                   : Text(
                       "Masukan gambar meja",
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _pickImage,
-                child: Text(
-                  "Pilih Gambar",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  primary: Color(0xFFF9683A),
-                ),
-              ),
-              SizedBox(height: 20),
+              // TextFormField lainnya
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
                   borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
                 ),
                 child: TextFormField(
                   controller: _namaController,
@@ -151,19 +139,20 @@ class _Forms_mejaState extends State<Forms_meja> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFFF9683A),
-                        width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
                   borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
                 ),
                 child: TextFormField(
                   controller: _alamatController,
@@ -182,25 +171,26 @@ class _Forms_mejaState extends State<Forms_meja> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFFF9683A),
-                        width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
                   borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
                 ),
                 child: TextFormField(
                   controller: _telpController,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
-                    labelText: "No. Telp",
+                    labelText: "Nomor Telepon",
                     labelStyle: GoogleFonts.poppins(
                       color: Colors.white,
                     ),
@@ -214,22 +204,24 @@ class _Forms_mejaState extends State<Forms_meja> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFFF9683A),
-                        width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
                   borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
                 ),
                 child: TextFormField(
                   controller: _deskripsiController,
+                  maxLines: 3,
                   decoration: InputDecoration(
                     labelText: "Deskripsi",
                     labelStyle: GoogleFonts.poppins(
@@ -245,19 +237,67 @@ class _Forms_mejaState extends State<Forms_meja> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFFF9683A),
-                        width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
                 ),
               ),
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
                   borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
+                ),
+                child: TextFormField(
+                  controller: date,
+                  decoration: InputDecoration(
+                    labelText: "Tanggal",
+                    labelStyle: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFF676B77),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color(0xFFF9683A),
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2025),
+                    );
+                    if (selectedDate != null) {
+                      setState(() {
+                        date.text =
+                            DateFormat('yyyy-MM-dd').format(selectedDate);
+                      });
+                    }
+                  },
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color(0xFF676B77),
                 ),
                 child: TextFormField(
                   controller: _hargaController,
@@ -277,78 +317,20 @@ class _Forms_mejaState extends State<Forms_meja> {
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color(0xFFF9683A),
-                        width: 2,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
-                ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF676B77),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  readOnly: true,
-                  controller: date,
-                  onTap: () async {
-                    var dateValue = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.dark().copyWith(
-                            colorScheme: ColorScheme.dark(
-                              primary: Color(0xFFF9683A),
-                              onPrimary: Colors.white,
-                              surface: Color(0xFFF9683A),
-                              onSurface: Colors.black,
-                            ),
-                            dialogBackgroundColor: Colors.white,
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-                    if (dateValue != null) {
-                      setState(() {
-                        date.text = DateFormat('yyyy-MM-dd').format(dateValue);
-                      });
-                    }
-                  },
-                  decoration: InputDecoration(
-                    labelText: "Tanggal",
-                    labelStyle: GoogleFonts.poppins(
-                      color: Colors.white,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF676B77),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFFF9683A),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
                   ),
-                  style: GoogleFonts.poppins(color: Colors.white),
                 ),
               ),
-              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
+                  await _pickImage();
+                  await _uploadImage;
                   await saveMeja();
-                  await _uploadImage();
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => Mejas()),
@@ -356,7 +338,7 @@ class _Forms_mejaState extends State<Forms_meja> {
                 },
                 child: Text(
                   "Tambah",
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

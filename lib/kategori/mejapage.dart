@@ -28,52 +28,208 @@ class mejapage extends StatelessWidget {
             mainAxisSpacing: 6,
           ),
           children: [
-            Container(
-              margin: EdgeInsets.all(10.0),
-              // child: ElevatedButton(
-              //   onPressed: () {
-              //     Navigator.push(context,
-              //         MaterialPageRoute(builder: ((context) {
-              //       return Edits_meja(),
-              //       );
-              //     })));
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Colors.white,
-              //     elevation: 3,
-              //   ),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(8),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Edits_meja(),
+                //       );
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/meja/meja1.jpeg",
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Image.asset(
-                        "assets/images/lemari.jpg",
-                        fit: BoxFit.cover,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Meja Kayu",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
-                    child: Text(
-                      "Lemari besi kayu",
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.black),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.500.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    child: Text(
-                      "Rp.500.000",
-                      style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Edits_meja(),
+                //       );
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/meja/meja2.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Meja Besi Kayu",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.750.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Edits_meja(),
+                //       );
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/meja/meja3.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Meja Kayu Bundar",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.450.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              elevation: 4,
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Edits_meja(),
+                //       );
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/meja/meja4.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Meja Kantor Kayu",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.800.000", 
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

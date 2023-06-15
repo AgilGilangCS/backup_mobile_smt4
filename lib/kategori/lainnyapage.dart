@@ -26,19 +26,20 @@ class lainnyapage extends StatelessWidget {
             mainAxisSpacing: 6,
           ),
           children: [
-            Container(
-              margin: EdgeInsets.all(10.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: ((context) {
-                    return Details_custom();
-                  })));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  elevation: 3,
-                ),
+            Card(
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Details_custom();
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
                 child: Column(
                   children: [
                     Expanded(
@@ -47,7 +48,7 @@ class lainnyapage extends StatelessWidget {
                           top: Radius.circular(8),
                         ),
                         child: Image.asset(
-                          "assets/images/lemari.jpg",
+                          "assets/images/lainnya/lainnya1.jpeg",
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -56,7 +57,7 @@ class lainnyapage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 4),
                       child: Text(
-                        "Lemari besi kayu",
+                        "Patung Kayu",
                         style: GoogleFonts.poppins(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
@@ -66,7 +67,56 @@ class lainnyapage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       child: Text(
-                        "Rp.500.000",
+                        "Rp.750.000",
+                        style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                // child: ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(context,
+                //         MaterialPageRoute(builder: ((context) {
+                //       return Details_custom();
+                //     })));
+                //   },
+                //   style: ElevatedButton.styleFrom(
+                //     backgroundColor: Colors.white,
+                //     elevation: 3,
+                //   ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        child: Image.asset(
+                          "assets/images/lainnya/lainnya2.jpeg",
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 4),
+                      child: Text(
+                        "Patung Kayu Buddha",
+                        style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        "Rp.1.000.000",
                         style: GoogleFonts.poppins(color: Color(0xFFF9683A)),
                       ),
                     ),
